@@ -19,7 +19,8 @@ engine.addEntity(coins)
 
 
 // ----- video stream and trigger area
-const myVideoClip = new VideoClip("https://ipfs.io/ipfs/QmdGnJHS8JBAqvqyKESSPR4NsLGpoYe3Z8WBxd9BioH6jL/altcoins1.m3u8")
+// 1
+const myVideoClip = new VideoClip("https://vod.dcl.guru/cryptochico/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData.m3u8")
 const myVideoTexture = new VideoTexture(myVideoClip)
 const myMaterial = new Material()
 myMaterial.specularIntensity = 0
@@ -27,6 +28,14 @@ myMaterial.metallic = 0
 myMaterial.roughness = 1
 myMaterial.albedoTexture = myVideoTexture
 
+// 2 
+const myVideoClip2 = new VideoClip("https://vod.dcl.guru/cryptochico/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation.m3u8")
+const myVideoTexture2 = new VideoTexture(myVideoClip2)
+const myMaterial2 = new Material()
+myMaterial2.specularIntensity = 0
+myMaterial2.metallic = 0
+myMaterial2.roughness = 1
+myMaterial2.albedoTexture = myVideoTexture2
 
 const screen = new Entity()
 screen.addComponent(new PlaneShape())
@@ -39,8 +48,12 @@ screen.addComponent(
 screen.addComponent(myMaterial)
 engine.addEntity(screen)
 
+
+
+
 // play the video texture
 myVideoTexture.playing = false
+myVideoTexture2.playing = false
 // create trigger area object, setting size and relative position
 let triggerBox = new utils.TriggerBoxShape(
   new Vector3(32, 15, 30),
@@ -58,11 +71,18 @@ screen.addComponent(
       //onCameraEnter
       log("Enter")
       myVideoTexture.playing = true
+      screen.addComponent(new utils.Delay(1000, () => {
+        myVideoTexture.playing = false
+        screen.addComponentOrReplace(myMaterial2)
+        myVideoTexture2.playing = true
+       }))
+
     },
     () => {
       //onCameraExit
       log("Exit")
       myVideoTexture.playing = false
+      myVideoTexture2.playing = false 
     },
     false //debug
   )
