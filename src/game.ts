@@ -2,11 +2,11 @@ import utils from '../node_modules/decentraland-ecs-utils/index'
 import { Delay } from '../node_modules/decentraland-ecs-utils/timer/component/delay'
 
 const videosList = [
-  { url: 'https://vod.dcl.guru/cryptochico/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData.m3u8', duration: 9*60+31 },
-  { url: 'https://vod.dcl.guru/cryptochico/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation.m3u8', duration: 10*60+31 },
-  { url: 'https://vod.dcl.guru/cryptochico/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved.m3u8', duration: 11*60+24 },
-  { url: 'https://vod.dcl.guru/cryptochico/SatoshiNakamotoRevealedOrJustAnotherFaketoshi/SatoshiNakamotoRevealedOrJustAnotherFaketoshi.m3u8', duration: 9*60+12 },
-  { url: 'https://vod.dcl.guru/cryptochico/TheNextAltcoinAltSeason-RealityorFairytaleMyth/TheNextAltcoinAltSeason-RealityorFairytaleMyth.m3u8', duration: 7*60+31 },
+  { url: 'https://vod.dcl.guru/cryptochico/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData.m3u8', duration: 9 * 60 + 31 },
+  { url: 'https://vod.dcl.guru/cryptochico/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation.m3u8', duration: 10 * 60 + 31 },
+  { url: 'https://vod.dcl.guru/cryptochico/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved.m3u8', duration: 11 * 60 + 24 },
+  { url: 'https://vod.dcl.guru/cryptochico/SatoshiNakamotoRevealedOrJustAnotherFaketoshi/SatoshiNakamotoRevealedOrJustAnotherFaketoshi.m3u8', duration: 9 * 60 + 12 },
+  { url: 'https://vod.dcl.guru/cryptochico/TheNextAltcoinAltSeason-RealityorFairytaleMyth/TheNextAltcoinAltSeason-RealityorFairytaleMyth.m3u8', duration: 7 * 60 + 31 },
 ]
 let videoRunning = -1
 let runningVideoTexture: VideoTexture
@@ -14,7 +14,7 @@ let withinParcel: boolean
 
 // ------- building
 let cc = new Entity()
-cc.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+cc.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 cc.addComponent(new GLTFShape('models/cc.glb'))
 let animator = new Animator()
 cc.addComponent(animator)

@@ -1,6 +1,6 @@
 {
   "display": {
-    "title": "interactive-text",
+    "title": "Chico Crypto",
     "favicon": "favicon_asset"
   },
   "contact": {
@@ -10,12 +10,10 @@
   "owner": "",
   "scene": {
     "parcels": [
-      "0,0",
-      "0,1",
-      "1,0",
-      "1,1"
+      "73,23","74,23",
+      "73,22","74,22"
     ],
-    "base": "0,0"
+    "base": "73,22"
   },
   "communications": {
     "type": "webrtc",
