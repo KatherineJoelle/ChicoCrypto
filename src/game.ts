@@ -12,6 +12,12 @@ let videoRunning = -1
 let runningVideoTexture: VideoTexture
 let withinParcel: boolean
 
+// Position hack
+Input.instance.subscribe("BUTTON_DOWN", ActionButton.PRIMARY, false, (e) => {
+  log(`pos: `, Camera.instance.position)
+  log(`rot: `, Camera.instance.rotation.eulerAngles)
+})
+
 // ------- building
 let cc = new Entity()
 cc.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
@@ -32,8 +38,9 @@ const screen = new Entity()
 screen.addComponent(new PlaneShape())
 screen.addComponent(
   new Transform({
-    position: new Vector3(13.7, 4.5, 2.6),
+    position: new Vector3(29.3, 4.5, 13.75),
     scale: new Vector3(11.2, 6, 1),
+    rotation: Quaternion.Euler(0, -90, 0)
   })
 )
 engine.addEntity(screen)
