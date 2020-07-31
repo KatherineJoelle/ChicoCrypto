@@ -30,7 +30,7 @@ clipText.play()
 engine.addEntity(cc)
 
 let coins = new Entity()
-coins.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+coins.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 coins.addComponent(new GLTFShape('models/coins.glb'))
 engine.addEntity(coins)
 
@@ -46,9 +46,14 @@ screen.addComponent(
 engine.addEntity(screen)
 
 // create trigger area object, setting size and relative position
-let triggerBox = new utils.TriggerBoxShape(new Vector3(32, 15, 30), new Vector3(2, 0, 14))
+const triggerEntity = new Entity()
+triggerEntity.addComponent(new Transform({
+  position: new Vector3(16, 0, 16)
+}))
+engine.addEntity(triggerEntity)
+let triggerBox = new utils.TriggerBoxShape(new Vector3(32, 15, 32), new Vector3(0, 7.5, 0))
 // Create trigger for entity
-screen.addComponent(
+triggerEntity.addComponent(
   new utils.TriggerComponent(
     triggerBox, //shape
     0, //layer
@@ -81,7 +86,7 @@ screen.addComponent(
 
 // ------ social links
 let twetch = new Entity()
-twetch.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+twetch.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 twetch.addComponent(new GLTFShape('models/twetch.glb'))
 twetch.addComponent(
   new OnPointerDown(() => {
@@ -91,7 +96,7 @@ twetch.addComponent(
 engine.addEntity(twetch)
 
 let instagram = new Entity()
-instagram.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+instagram.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 instagram.addComponent(new GLTFShape('models/instagram.glb'))
 instagram.addComponent(
   new OnPointerDown(() => {
@@ -101,7 +106,7 @@ instagram.addComponent(
 engine.addEntity(instagram)
 
 let telegram = new Entity()
-telegram.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+telegram.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 telegram.addComponent(new GLTFShape('models/telegram.glb'))
 telegram.addComponent(
   new OnPointerDown(() => {
@@ -111,7 +116,7 @@ telegram.addComponent(
 engine.addEntity(telegram)
 
 let uptrennd = new Entity()
-uptrennd.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+uptrennd.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 uptrennd.addComponent(new GLTFShape('models/uptrennd.glb'))
 uptrennd.addComponent(
   new OnPointerDown(() => {
@@ -121,7 +126,7 @@ uptrennd.addComponent(
 engine.addEntity(uptrennd)
 
 let youtube = new Entity()
-youtube.addComponent(new Transform({ position: new Vector3(16, 0, 16) }))
+youtube.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
 youtube.addComponent(new GLTFShape('models/youtube.glb'))
 youtube.addComponent(
   new OnPointerDown(() => {
