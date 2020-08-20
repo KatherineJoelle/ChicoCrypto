@@ -47,12 +47,14 @@ engine.addEntity(coins)
 
 const bong = new Entity()
 const bAnimator = new Animator
-const clipPuff = new AnimationState('puff')
+const clipPuff = new AnimationState('test')
+
 bAnimator.addClip(clipPuff)
 bong.addComponent(bAnimator)
 clipPuff.playing = false
 clipPuff.looping = false
-bong.addComponent(new Transform({position: new Vector3(26.5,1.9,23.5), rotation: Quaternion.Euler(0,-90,0)}))
+clipPuff.speed = 1
+bong.addComponent(new Transform({position: new Vector3(26.5,1.85,23.5), rotation: Quaternion.Euler(0,-90,0)}))
 bong.addComponent(new GLTFShape('models/bong.glb'))
 engine.addEntity(bong)
 const puff = new AudioClip("sounds/bong.mp3")
@@ -60,12 +62,12 @@ const source = new AudioSource(puff)
 bong.addComponent(source)
 source.playing = false
 source.loop = false
-source.volume = 10
+source.volume = 100
 bong.addComponent(
   new OnPointerDown(
     e => {
       log("clicked bong")
-      clipPuff.play()
+      clipPuff.playing = !clipPuff.playing
       source.playOnce()
     },
     { button: ActionButton.POINTER, hoverText: 'smoke'}
