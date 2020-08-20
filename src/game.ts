@@ -1,15 +1,15 @@
 import utils from '../node_modules/decentraland-ecs-utils/index'
-import { Delay } from '../node_modules/decentraland-ecs-utils/timer/component/delay'
+//import { Delay } from '../node_modules/decentraland-ecs-utils/timer/component/delay'
 
-const videosList = [
-  { url: 'https://vod.dcl.guru/cryptochico/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData.m3u8', duration: 9 * 60 + 31 },
-  { url: 'https://vod.dcl.guru/cryptochico/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation.m3u8', duration: 10 * 60 + 31 },
-  { url: 'https://vod.dcl.guru/cryptochico/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved.m3u8', duration: 11 * 60 + 24 },
-  { url: 'https://vod.dcl.guru/cryptochico/SatoshiNakamotoRevealedOrJustAnotherFaketoshi/SatoshiNakamotoRevealedOrJustAnotherFaketoshi.m3u8', duration: 9 * 60 + 12 },
-  { url: 'https://vod.dcl.guru/cryptochico/TheNextAltcoinAltSeason-RealityorFairytaleMyth/TheNextAltcoinAltSeason-RealityorFairytaleMyth.m3u8', duration: 7 * 60 + 31 },
-]
-let videoRunning = -1
-let runningVideoTexture: VideoTexture
+//const videosList = [
+//  { url: 'https://vod.dcl.guru/cryptochico/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData/Litecoin-DeadOrDevelopedGithubExposedCanYouRelyonGithubData.m3u8', duration: 9 * 60 + 31 },
+//  { url: 'https://vod.dcl.guru/cryptochico/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation/MajorALTCOINBreakcoutNEXTWEEK-2CoinsSibosSpeculation.m3u8', duration: 10 * 60 + 31 },
+//  { url: 'https://vod.dcl.guru/cryptochico/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved/RussianSpyConspiracyWillDestroyThese3CryptosDeepStateInvolved.m3u8', duration: 11 * 60 + 24 },
+//  { url: 'https://vod.dcl.guru/cryptochico/SatoshiNakamotoRevealedOrJustAnotherFaketoshi/SatoshiNakamotoRevealedOrJustAnotherFaketoshi.m3u8', duration: 9 * 60 + 12 },
+//  { url: 'https://vod.dcl.guru/cryptochico/TheNextAltcoinAltSeason-RealityorFairytaleMyth/TheNextAltcoinAltSeason-RealityorFairytaleMyth.m3u8', duration: 7 * 60 + 31 },
+//]
+//let videoRunning = -1
+//let runningVideoTexture: VideoTexture
 let withinParcel: boolean
 
 // Position hack
@@ -18,32 +18,70 @@ Input.instance.subscribe("BUTTON_DOWN", ActionButton.PRIMARY, false, (e) => {
   log(`rot: `, Camera.instance.rotation.eulerAngles)
 })
 
-// ------- building
+// ------- building and party audio
 let cc = new Entity()
-cc.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
+const transform = new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) })
+cc.addComponent(transform)
 cc.addComponent(new GLTFShape('models/cc.glb'))
 let animator = new Animator()
 cc.addComponent(animator)
 const clipText = new AnimationState('text') //spin
+const clipParty = new AnimationState('party') //lights
 animator.addClip(clipText)
+animator.addClip(clipParty)
 clipText.play()
+clipParty.play()
+clipParty.speed = 1
 engine.addEntity(cc)
 
 let coins = new Entity()
-coins.addComponent(new Transform({ position: new Vector3(16, 0, 16), rotation: Quaternion.Euler(0, -90, 0) }))
+coins.addComponent(transform)
 coins.addComponent(new GLTFShape('models/coins.glb'))
+coins.addComponent(
+  new AudioStream("https://icecast.ravepartyradio.org/ravepartyradio-192.mp3")
+)
+AudioStream.call
 engine.addEntity(coins)
 
-const screen = new Entity()
-screen.addComponent(new PlaneShape())
-screen.addComponent(
-  new Transform({
-    position: new Vector3(29.3, 4.5, 13.75),
-    scale: new Vector3(11.2, 6, 1),
-    rotation: Quaternion.Euler(0, -90, 0)
-  })
+// party trick
+
+const bong = new Entity()
+const bAnimator = new Animator
+const clipPuff = new AnimationState('puff')
+bAnimator.addClip(clipPuff)
+bong.addComponent(bAnimator)
+clipPuff.playing = false
+clipPuff.looping = false
+bong.addComponent(new Transform({position: new Vector3(26.5,1.9,23.5), rotation: Quaternion.Euler(0,-90,0)}))
+bong.addComponent(new GLTFShape('models/bong.glb'))
+engine.addEntity(bong)
+const puff = new AudioClip("sounds/bong.mp3")
+const source = new AudioSource(puff)
+bong.addComponent(source)
+source.playing = false
+source.loop = false
+source.volume = 10
+bong.addComponent(
+  new OnPointerDown(
+    e => {
+      log("clicked bong")
+      clipPuff.play()
+      source.playOnce()
+    },
+    { button: ActionButton.POINTER, hoverText: 'smoke'}
+  )
 )
-engine.addEntity(screen)
+
+//const screen = new Entity()
+//screen.addComponent(new PlaneShape())
+//screen.addComponent(
+//  new Transform({
+//    position: new Vector3(29.3, 4.5, 13.75),
+//    scale: new Vector3(11.2, 6, 1),
+//    rotation: Quaternion.Euler(0, -90, 0)
+//  })
+//)
+//engine.addEntity(screen)
 
 // create trigger area object, setting size and relative position
 const triggerEntity = new Entity()
@@ -61,11 +99,11 @@ triggerEntity.addComponent(
     null, //onTriggerEnter
     null, //onTriggerExit
     () => {
-      if (runningVideoTexture == undefined) rollVideos(screen)
+      //if (runningVideoTexture == undefined) rollVideos(screen)
       //onCameraEnter
       log('Enter')
       withinParcel = true
-      runningVideoTexture.playing = true
+      //runningVideoTexture.playing = true
       /*       screen.addComponent(
         new utils.Interval(5000, () => {
           rollVideos(screen);
@@ -76,9 +114,9 @@ triggerEntity.addComponent(
     () => {
       //onCameraExit
       log('Exit')
-      screen.removeComponent(Delay)
+      //screen.removeComponent(Delay)
       withinParcel = false
-      runningVideoTexture.playing = false
+      //runningVideoTexture.playing = false
     },
     false //debug
   )
@@ -135,37 +173,37 @@ youtube.addComponent(
 )
 engine.addEntity(youtube)
 
-async function rollVideos(screen: Entity) {
-  videoRunning++
-  if (videoRunning >= videosList.length) videoRunning = 0
-  screen.removeComponent(Material)
+//async function rollVideos(screen: Entity) {
+//  videoRunning++
+//  if (videoRunning >= videosList.length) videoRunning = 0
+//  screen.removeComponent(Material)
 
-  const ourVideoClip = new VideoClip(videosList[videoRunning].url)
-  const ourVideoTexture = new VideoTexture(ourVideoClip)
-  const ourMaterial = new Material()
-  ourMaterial.specularIntensity = 0
-  ourMaterial.metallic = 0
-  ourMaterial.roughness = 1
-  ourMaterial.albedoTexture = ourVideoTexture
-  runningVideoTexture = ourVideoTexture
+//  const ourVideoClip = new VideoClip(videosList[videoRunning].url)
+//  const ourVideoTexture = new VideoTexture(ourVideoClip)
+//  const ourMaterial = new Material()
+//  ourMaterial.specularIntensity = 0
+//  ourMaterial.metallic = 0
+//  ourMaterial.roughness = 1
+//  ourMaterial.albedoTexture = ourVideoTexture
+//  runningVideoTexture = ourVideoTexture
 
-  screen.addComponent(ourMaterial)
-  ourVideoTexture.playing = true
-  ourVideoTexture.loop = false
-}
+//  screen.addComponent(ourMaterial)
+//  ourVideoTexture.playing = true
+//  ourVideoTexture.loop = false
+//}
 
-class VideoSystem {
-  timeSinceStart: number = 0
-  update(dt: number) {
-    let r = screen.getComponent(Material).albedoTexture as VideoTexture
-    if (r && withinParcel) {
-      this.timeSinceStart += dt
-      if (this.timeSinceStart >= videosList[videoRunning].duration) {
-        this.timeSinceStart = 0
-        rollVideos(screen)
-      }
-    }
-  }
-}
+//class VideoSystem {
+//  timeSinceStart: number = 0
+//  update(dt: number) {
+//    let r = screen.getComponent(Material).albedoTexture as VideoTexture
+//    if (r && withinParcel) {
+//      this.timeSinceStart += dt
+//      if (this.timeSinceStart >= videosList[videoRunning].duration) {
+//        this.timeSinceStart = 0
+//        rollVideos(screen)
+//      }
+//    }
+//  }
+//}
 
-engine.addSystem(new VideoSystem())
+//engine.addSystem(new VideoSystem())
