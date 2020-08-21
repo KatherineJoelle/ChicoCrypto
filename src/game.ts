@@ -240,7 +240,7 @@ function hslToHex(h, s, l) {
     const hex = Math.round(x * 255).toString(16)
     return hex.length === 1 ? '0' + hex : hex
   }
-  return [r,g,b]
+  return [r, g, b]
 }
 
 class CrossRealm implements ISystem {
@@ -255,6 +255,7 @@ class CrossRealm implements ISystem {
   avatars: {
     [userId: string]: {
       lastUpdate: number
+      lastMove: number
       lastWearableCheck: number
       pos: [number, number, number]
       rot: [number, number, number]
@@ -300,6 +301,7 @@ class CrossRealm implements ISystem {
           if (!this.avatars[add] && this.realm != undefined && e.user.realm != this.realm && e.lastUpdate > +new Date() - 1 * 60 * 1000) {
             this.avatars[add] = {
               lastUpdate: e.lastUpdate,
+              lastMove: e.lastUpdate,
               lastWearableCheck: +new Date(),
               pos: e.pos,
               rot: e.rot,
@@ -331,9 +333,22 @@ class CrossRealm implements ISystem {
             log(`Created shape for ${e.user.name} in ${e.user.realm} at ${+e.pos[0] / 16},${+e.pos[2] / 16}`)
           } else if (this.realm != undefined && e.user.realm != this.realm && e.lastUpdate > +new Date() - 1 * 60 * 1000) {
             this.avatars[add].lastUpdate = e.lastUpdate
-            this.avatars[add].pos = e.pos
+            if (!new Vector3(...this.avatars[add].pos).equals(new Vector3(...e.pos))) {
+              this.avatars[add].lastMove = e.lastUpdate
+              log('last move', this.avatars[add].lastMove)
+              this.avatars[add].pos = e.pos
+              this.avatars[add].ent.getComponentOrCreate(Transform).position = new Vector3(e.pos[0], e.pos[1], e.pos[2])
+            } else if (this.avatars[add].lastMove < +new Date() - 10000) {
+              if (
+                !this.avatars[add].ent.getComponent(AvatarShape).expressionTriggerTimestamp ||
+                this.avatars[add].ent.getComponent(AvatarShape).expressionTriggerTimestamp < Math.round(+new Date() / 1000 - 9)
+              ) {
+                log(this.avatars[add].ent.getComponent(AvatarShape).name, 'dance')
+                this.avatars[add].ent.getComponent(AvatarShape).expressionTriggerId = 'robot'
+                this.avatars[add].ent.getComponent(AvatarShape).expressionTriggerTimestamp = Math.round(+new Date() / 1000)
+              }
+            }
             this.avatars[add].rot = e.rot
-            this.avatars[add].ent.getComponentOrCreate(Transform).position = new Vector3(e.pos[0], e.pos[1], e.pos[2])
 
             this.avatars[add].ent.getComponentOrCreate(Transform).rotation = new Quaternion(e.rot[0], e.rot[1], e.rot[2], e.rot[3])
             if (this.avatars[add].lastWearableCheck < +new Date() - 15000) {
@@ -380,8 +395,6 @@ class CrossRealm implements ISystem {
     const currentPos = this.camera.worldPosition.subtract(new Vector3(0, 1.6, 0))
     const currentRot = this.camera.rotation.eulerAngles
     if (this.userData.userId != undefined) {
-
-
       if (this.timeSinceColor > 0.1 && this.isWithinParcel(this.parcels)) {
         this.timeSinceColor = 0
         for (const user in this.avatars) {
@@ -389,12 +402,11 @@ class CrossRealm implements ISystem {
             const avatar = this.avatars[user]
             avatar.hsl = [avatar.hsl[0] + 8, avatar.hsl[1], avatar.hsl[2]]
             if (avatar.hsl[0] >= 360) avatar.hsl = [0, avatar.hsl[1], avatar.hsl[2]]
-              avatar.ent.getComponent(AvatarShape).skinColor = new Color4(...hslToHex(avatar.hsl[0], avatar.hsl[1], avatar.hsl[2]), 1)
-              avatar.ent.getComponent(AvatarShape).hairColor = new Color4(...hslToHex(Math.random()*360, avatar.hsl[1], avatar.hsl[2]), 1)
+            avatar.ent.getComponent(AvatarShape).skinColor = new Color4(...hslToHex(avatar.hsl[0], avatar.hsl[1], avatar.hsl[2]), 1)
+            avatar.ent.getComponent(AvatarShape).hairColor = new Color4(...hslToHex(Math.random() * 360, avatar.hsl[1], avatar.hsl[2]), 1)
           }
         }
       }
-
 
       if (this.timeSincePos > 0.2 && (this.lastPos.y != currentPos.y || this.lastRot.toString() != currentRot.toString()) && this.isWithinParcel(this.parcels)) {
         this.timeSincePos = 0
@@ -465,7 +477,6 @@ class CrossRealm implements ISystem {
     const profileData = json[0].metadata.avatars[0]
     const avatarData = profileData.avatar
     const dRealm = await getCurrentRealm()
-    if (profileData.name != ent.getComponent(AvatarShape).name) ent.getComponent(AvatarShape).name = profileData.name
     if (dRealm.serverName != 'localhost') {
       if (avatarData.wearables != ent.getComponent(AvatarShape).wearables) ent.getComponent(AvatarShape).wearables = avatarData.wearables
       if (avatarData.bodyShape != ent.getComponent(AvatarShape).bodyShape) ent.getComponent(AvatarShape).bodyShape = avatarData.bodyShape
